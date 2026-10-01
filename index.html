@@ -244,14 +244,19 @@ button{background:none;border:0;padding:0;cursor:pointer}
 .doc-title:focus{outline:none;border-color:var(--accent);background:var(--bg)}
 
 .stage-wrap{position:relative;flex:1;min-height:0;display:flex}
-.stage{flex:1;overflow:auto;background:var(--stage);padding:26px 0 120px;position:relative;min-height:0;overscroll-behavior:contain}
+.stage{
+  flex:1;overflow:auto;background:var(--stage);padding:26px 0 120px;position:relative;min-height:0;
+  overscroll-behavior:contain;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none
+}
 .stage.panning{cursor:grab}
 .stage.panning .page{cursor:inherit}
 .pages{display:flex;flex-direction:column;align-items:center;gap:26px;margin:0 auto;width:max-content;padding:0 24px}
 .page{
   position:relative;background:var(--paper);box-shadow:var(--shadow-2);border:1px solid rgba(0,0,0,.14);
-  border-radius:2px;flex:0 0 auto;
+  border-radius:2px;flex:0 0 auto;touch-action:none
 }
+.page .src-layer span{-webkit-user-select:text;user-select:text}
+
 html[data-theme="dark"] .page{border-color:rgba(255,255,255,.10)}
 .page.focus{outline:2px solid var(--accent);outline-offset:3px}
 .page canvas{position:absolute;left:0;top:0;width:100%;height:100%;display:block}
@@ -281,7 +286,7 @@ html[data-theme="dark"] .note{border-color:rgba(0,0,0,.4);box-shadow:var(--shado
 .note-head .nbtn:hover{background:rgba(0,0,0,.09)}
 .note-body{
   flex:1;width:100%;border:0;background:transparent;resize:none;padding:8px 9px;font:13px/1.45 var(--f-ui);
-  color:#22252a;outline:none;min-height:0;letter-spacing:.1px
+  color:#22252a;outline:none;min-height:0;letter-spacing:.1px;touch-action:none
 }
 .note-resize{position:absolute;right:0;bottom:0;width:15px;height:15px;cursor:nwse-resize}
 .note-resize::after{
@@ -292,7 +297,7 @@ html[data-theme="dark"] .note{border-color:rgba(0,0,0,.4);box-shadow:var(--shado
   content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--accent);opacity:.55
 }
 .tbox{
-  position:absolute;min-width:48px;padding:2px 4px;font:15px/1.35 var(--f-ui);color:#26292c;
+  position:absolute;min-width:48px;padding:2px 4px;font:15px/1.35 var(--f-ui);color:#26292c;touch-action:none;
   border:1px dashed transparent;border-radius:4px;white-space:pre-wrap;word-break:break-word;cursor:text
 }
 .tbox:hover{border-color:rgba(0,0,0,.22)}
@@ -437,6 +442,9 @@ table.data th,table.data td{border:1px solid var(--line);padding:4px 6px;text-al
 table.data th{background:var(--panel-2);position:sticky;top:0;font-weight:600}
 table.data tr:nth-child(even) td{background:var(--panel-2)}
 .textdoc{padding:0;font:15.5px/1.72 var(--f-doc);color:#24262a;white-space:pre-wrap;word-break:break-word;overflow:hidden}
+.hw-preview{width:100%;border:1px solid var(--line);border-radius:6px;background:#fff;display:block}
+.hw-preview.dark{background:#111}
+.stage.grabbing{cursor:grabbing}
 html[data-theme="dark"] .textdoc{color:#dfe1e4}
 .textdoc h1,.textdoc h2,.textdoc h3{font-family:var(--f-ui);margin:.2em 0 .4em}
 .progress{height:5px;border-radius:4px;background:var(--panel-3);overflow:hidden}
@@ -520,6 +528,8 @@ html[data-theme="dark"] .textdoc{color:#dfe1e4}
 <symbol id="i-key" viewBox="0 0 24 24"><rect x="2.5" y="6" width="19" height="12" rx="2"/><path d="M6 10h1M9.5 10h1M13 10h1M16.5 10h1M7 14h10"/></symbol>
 <symbol id="i-print" viewBox="0 0 24 24"><path d="M7 9V3.5h10V9"/><rect x="4" y="9" width="16" height="7" rx="1.5"/><path d="M7 16h10v4.5H7z"/></symbol>
 <symbol id="i-mic" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="10" rx="3"/><path d="M5.5 11a6.5 6.5 0 0013 0M12 17.5V21"/></symbol>
+<symbol id="i-finger" viewBox="0 0 24 24"><path d="M9 11.5V5.6a1.6 1.6 0 013.2 0v5.2"/><path d="M12.2 11V9.4a1.5 1.5 0 013 0V11"/><path d="M15.2 11.2v-1a1.5 1.5 0 013 0v4.6c0 3.6-2.6 6.2-6.1 6.2h-1.4c-2 0-3.8-1-4.9-2.6l-1.9-2.9a1.4 1.4 0 012.3-1.6l1.8 2.1"/><path d="M9 11.5v3.2"/></symbol>
+<symbol id="i-hwr" viewBox="0 0 24 24"><path d="M3.5 14.5c2.2-6.5 4.2-6.5 6.4 0 2.2 6.5 4.2 6.5 6.4 0 1.4-4.1 2.7-5.5 4.2-5.8"/><path d="M3.5 20.5h17"/><path d="M17.5 3.5l2 2-3.6 3.6-2.4.4.4-2.4z"/></symbol>
 <symbol id="i-tag" viewBox="0 0 24 24"><path d="M11 3h9v9l-8.5 8.5L3 12z"/><circle cx="16" cy="7" r="1.4"/></symbol>
 </defs></svg>
 
@@ -683,6 +693,11 @@ html[data-theme="dark"] .textdoc{color:#dfe1e4}
         </div>
         <div class="spacer"></div>
         <span class="pill" id="ed-save">Gespeichert</span>
+        <div class="group">
+          <button class="tbtn sm ic-only" id="ed-input" title="Eingabemodus wechseln"><svg class="ic sm"><use href="#i-finger"/></svg></button>
+          <span class="num" id="ed-input-num" style="min-width:auto;padding:0 5px 0 1px;font-size:11.5px">Stift zeichnet</span>
+        </div>
+        <button class="tbtn sm" id="ed-hwr" title="Handschrift in Text umwandeln"><svg class="ic sm"><use href="#i-hwr"/></svg><span>Handschrift</span></button>
         <button class="tbtn sm" id="ed-summarize" title="Inhalt analysieren"><svg class="ic sm"><use href="#i-chart"/></svg><span>Analysieren</span></button>
         <button class="tbtn sm" id="ed-export" title="Seite als Bild"><svg class="ic sm"><use href="#i-download"/></svg><span>Export</span></button>
       </div>
@@ -699,6 +714,7 @@ html[data-theme="dark"] .textdoc{color:#dfe1e4}
         <span id="st-tool">Werkzeug: Stift</span>
         <span id="st-pos">Seite 1</span>
         <span id="st-marks">0 Striche</span>
+        <span id="st-input">Eingabe: Stift zeichnet, Finger scrollt</span>
         <span class="right">
           <span id="st-words">0 Wörter</span>
           <span id="st-read">0 Min. Lesezeit</span>
@@ -869,6 +885,7 @@ function askText(title, label, value = "", { multiline = false, okLabel = "Speic
    ============================================================================ */
 const DEFAULT_SETTINGS = {
   theme: "auto", autoAnalyze: true, autosaveMs: 900, defaultTool: "pen",
+  inputMode: "pen-draw", palmReject: true, hwrLine: false,
   paperColor: "blank", strokeSmooth: true, notes: true, cookieNotice: true,
   restoreTabs: true, thumbQuality: 0.55, lastDoc: null, showThumbs: true, fontScale: 1
 };
@@ -2273,34 +2290,193 @@ const Editor = {
     MARKER_COLORS.forEach(add);
     this.setColor(this.color);
   },
+  /* ---------------- Finger, Stift, Handballen ---------------- */
+  touches: new Map(),
+  gesture: null,
+  inertia: null,
+  penActive: false,
+  lastPenTs: 0,
+
+  get drawTools() { return ["pen", "marker", "eraser", "note", "text", "shape", "lasso"]; },
+  fingerDraws() {
+    if (SETTINGS.inputMode !== "finger-draw") return false;
+    if (this.space || this.tool === "hand") return false;
+    if (this.touches.size >= 1) return false;   // zweiter Finger: immer Geste
+    return this.drawTools.includes(this.tool);
+  },
+  isPalm(e) {
+    if (e.pointerType !== "touch") return false;
+    if (this.penActive) return true;
+    if (Date.now() - this.lastPenTs < 450) return true;                    // kurzer Moment nach dem Stift
+    if (SETTINGS.palmReject !== false) {
+      const w = e.width || 0, h = e.height || 0;
+      if (w > 42 || h > 42) return true;                                   // große Kontaktfläche = Handballen
+    }
+    return false;
+  },
+  beginTouchGesture(e) {
+    const stage = $("#stage");
+    this.endInertia();
+    this.touches.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    const r = stage.getBoundingClientRect();
+    if (this.touches.size === 1) {
+      this.gesture = {
+        pinch: false, lastT: performance.now(), vx: 0, vy: 0, zoom: this.zoom,
+        contentX: (stage.scrollLeft + (e.clientX - r.left)) / this.zoom,
+        contentY: (stage.scrollTop + (e.clientY - r.top)) / this.zoom
+      };
+    } else if (this.touches.size === 2) {
+      const [a, b] = Array.from(this.touches.values());
+      const mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2;
+      this.gesture = {
+        pinch: true, d0: Math.max(1, Math.hypot(a.x - b.x, a.y - b.y)), zoom: this.zoom,
+        cx: mx, cy: my, lastT: performance.now(), vx: 0, vy: 0,
+        contentX: (stage.scrollLeft + (mx - r.left)) / this.zoom,
+        contentY: (stage.scrollTop + (my - r.top)) / this.zoom
+      };
+    }
+    stage.classList.add("grabbing");
+    document.body.style.cursor = "grabbing";
+    e.preventDefault();
+  },
+  updateTouchGesture(e) {
+    const stage = $("#stage");
+    if (!this.touches.has(e.pointerId)) return;
+    const prev = this.touches.get(e.pointerId);
+    this.touches.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    const g = this.gesture; if (!g) return;
+    const r = stage.getBoundingClientRect();
+    if (g.pinch && this.touches.size >= 2) {
+      const [a, b] = Array.from(this.touches.values());
+      const d = Math.max(1, Math.hypot(a.x - b.x, a.y - b.y));
+      const mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2;
+      const nz = clamp(g.zoom * (d / g.d0), 0.25, 5);
+      this.applyLiveZoom(nz);
+      stage.scrollLeft = g.contentX * nz - (mx - r.left);
+      stage.scrollTop = g.contentY * nz - (my - r.top);
+      g.cx = mx; g.cy = my;
+      e.preventDefault();
+      return;
+    }
+    const dx = e.clientX - prev.x, dy = e.clientY - prev.y;
+    stage.scrollLeft -= dx; stage.scrollTop -= dy;
+    const now = performance.now(), dt = Math.max(1, now - g.lastT);
+    g.vx = 0.65 * g.vx + 0.35 * (dx / dt);
+    g.vy = 0.65 * g.vy + 0.35 * (dy / dt);
+    g.lastT = now;
+    e.preventDefault();
+  },
+  endTouchGesture(silent, e) {
+    const stage = $("#stage");
+    const g = this.gesture;
+    if (e && e.pointerId != null && this.touches.has(e.pointerId)) this.touches.delete(e.pointerId);
+    else this.touches.clear();
+    if (this.touches.size >= 1) {                    // ein Finger bleibt liegen: Ziehen neu aufsetzen
+      const [a] = Array.from(this.touches.values());
+      const r = stage.getBoundingClientRect();
+      this.gesture = {
+        pinch: false, lastT: performance.now(), vx: 0, vy: 0, zoom: this.zoom,
+        contentX: (stage.scrollLeft + (a.x - r.left)) / this.zoom,
+        contentY: (stage.scrollTop + (a.y - r.top)) / this.zoom
+      };
+      return;
+    }
+    this.gesture = null;
+    stage.classList.remove("grabbing"); document.body.style.cursor = "";
+    if (g && g.pinch) {
+      const nz = this.zoom;
+      this.setZoom(nz, false, true);                 // scharf nachrendern
+      requestAnimationFrame(() => {
+        const r2 = stage.getBoundingClientRect();
+        stage.scrollLeft = g.contentX * nz - (g.cx - r2.left);
+        stage.scrollTop = g.contentY * nz - (g.cy - r2.top);
+      });
+    } else if (!silent && g && (Math.abs(g.vx) > 0.06 || Math.abs(g.vy) > 0.06)) {
+      this.startInertia(g.vx, g.vy);
+    }
+  },
+  startInertia(vx, vy) {
+    const stage = $("#stage");
+    this.endInertia();
+    let x = vx, y = vy, last = performance.now();
+    const step = () => {
+      const now = performance.now(), dt = Math.min(32, Math.max(6, now - last)); last = now;
+      x *= 0.93; y *= 0.93;
+      stage.scrollLeft -= x * dt; stage.scrollTop -= y * dt;
+      if (Math.abs(x) < 0.02 && Math.abs(y) < 0.02) { this.inertia = null; return; }
+      this.inertia = requestAnimationFrame(step);
+    };
+    this.inertia = requestAnimationFrame(step);
+  },
+  endInertia() { if (this.inertia) cancelAnimationFrame(this.inertia); this.inertia = null; },
+  applyLiveZoom(z) {
+    if (!this.doc) return;
+    this.zoom = clamp(z, 0.25, 5);
+    $("#ed-zoom-num").textContent = Math.round(this.zoom * 100) + "%";
+    let maxW = PAGE_W_DEFAULT;
+    this.doc.pageOrder.forEach(pid => {
+      const rec = this.els.get(pid), page = DOC.page(pid);
+      if (!rec || !page) return;
+      maxW = Math.max(maxW, page.w);
+      rec.el.style.width = (page.w * this.zoom) + "px";
+      rec.el.style.height = (page.h * this.zoom) + "px";
+      const g = rec.el.querySelector(".paper-grid");
+      if (g) g.style.background = paperCSS(page.paper || this.doc.settings.paper, this.zoom);
+      this.layoutDomAnnotations(pid);
+    });
+    $("#pages").style.width = (maxW * this.zoom + 48) + "px";
+  },
+
   /* ---------------- Zeigerereignisse ---------------- */
   bindStage() {
+    const capture = (el, id) => { try { el.setPointerCapture && el.setPointerCapture(id); } catch (err) { } };
     const stage = $("#stage"), self = this;
     const recFor = e => {
       const el = e.target.closest && e.target.closest(".page");
       if (!el) return null;
       return self.els.get(el.dataset.pageId) || null;
     };
+    /* ---------- Eingabe: Stift, Finger, Handballen ---------- */
     stage.addEventListener("pointerdown", e => {
       if (!self.doc) return;
-      if (e.target.closest(".note") || e.target.closest(".tbox")) return; // eigene Handler
+      const onWidget = e.target.closest(".note") || e.target.closest(".tbox");
+      if (onWidget && !(e.pointerType === "touch" && SETTINGS.inputMode !== "finger-draw")) return; // eigene Handler
       const rec = recFor(e);
+
+      if (e.pointerType === "pen") {
+        self.penActive = true; self.lastPenTs = Date.now();
+        self.endTouchGesture(true);
+      } else if (e.pointerType === "touch") {
+        if (self.penActive || (self.draw && self.draw.ptr !== "touch")) { e.preventDefault(); return; }
+        // Zweiter Finger während einer Fingerzeichnung: Strich verwerfen, dann scrollen und zoomen
+        if (self.draw && self.draw.ptr === "touch") {
+          const d = self.draw; self.draw = null;
+          if (d.lastClient) self.touches.set(d.pointerId, { x: d.lastClient.x, y: d.lastClient.y });
+          if (d.kind === "stroke" || d.kind === "shape") self.redrawInk(d.pid);
+          self.beginTouchGesture(e);
+          return;
+        }
+        if (self.isPalm(e)) { e.preventDefault(); return; }                // Handballen: weder zeichnen noch scrollen
+        if (!self.fingerDraws()) { self.beginTouchGesture(e); return; }    // Finger scrollt und zooms
+      }
+
       const wantPan = self.tool === "hand" || self.space || e.button === 1;
       if (wantPan) { self.startPan(e); return; }
-      if (!rec) return;
+      if (!rec) { if (e.pointerType === "mouse" || e.pointerType === "pen") self.startPan(e); return; }
       if (e.button === 2) return;
       const pt = self.toPage(e, rec);
       if (self.textEditId) self.commitTextBox();
       if (self.tool === "pen" || self.tool === "marker") {
-        const st = { id: uid("st"), t: self.tool === "marker" ? "h" : "p", c: self.color, w: self.tool === "marker" ? Math.max(8, self.width * 3) : self.width, o: self.tool === "marker" ? clamp(self.opacity * 0.4, .1, .6) : self.opacity, pts: [r2(pt.x), r2(pt.y), r2(pt.x) + .01, r2(pt.y) + .01], smooth: SETTINGS.strokeSmooth, pageId: rec.page.id };
-        self.draw = { kind: "stroke", st, rec, pid: rec.page.id };
-        rec.el.setPointerCapture && rec.el.setPointerCapture(e.pointerId);
+        const st = { id: uid("st"), t: self.tool === "marker" ? "h" : "p", c: self.color, w: self.tool === "marker" ? Math.max(8, self.width * 3) : self.width, o: self.tool === "marker" ? clamp(self.opacity * 0.4, .1, .6) : self.opacity, pts: [r2(pt.x), r2(pt.y), r2(pt.x) + .01, r2(pt.y) + .01], smooth: SETTINGS.strokeSmooth, pageId: rec.page.id, input: e.pointerType };
+        self.draw = { kind: "stroke", st, rec, pid: rec.page.id, ptr: e.pointerType, pointerId: e.pointerId, lastClient: { x: e.clientX, y: e.clientY } };
+        capture(rec.el, e.pointerId);
         e.preventDefault();
       } else if (self.tool === "shape") {
-        self.draw = { kind: "shape", sh: { id: uid("sh"), t: self.shape, x1: r2(pt.x), y1: r2(pt.y), x2: r2(pt.x), y2: r2(pt.y), c: self.color, w: self.width, o: self.opacity, pageId: rec.page.id }, rec, pid: rec.page.id };
+        self.draw = { kind: "shape", sh: { id: uid("sh"), t: self.shape, x1: r2(pt.x), y1: r2(pt.y), x2: r2(pt.x), y2: r2(pt.y), c: self.color, w: self.width, o: self.opacity, pageId: rec.page.id }, rec, pid: rec.page.id, ptr: e.pointerType, pointerId: e.pointerId, lastClient: { x: e.clientX, y: e.clientY } };
+        capture(rec.el, e.pointerId);
         e.preventDefault();
       } else if (self.tool === "eraser") {
-        self.draw = { kind: "erase", rec, pid: rec.page.id, r: Math.max(6, self.width * 3), touched: false };
+        self.draw = { kind: "erase", rec, pid: rec.page.id, r: Math.max(6, self.width * 3), touched: false, ptr: e.pointerType, pointerId: e.pointerId, lastClient: { x: e.clientX, y: e.clientY } };
         self.eraseAt(rec, pt);
         e.preventDefault();
       } else if (self.tool === "note") {
@@ -2310,14 +2486,17 @@ const Editor = {
         self.addTextBox(rec, pt);
         e.preventDefault();
       } else if (self.tool === "lasso") {
-        self.draw = { kind: "select", rec, pid: rec.page.id, start: pt, moved: false };
+        self.draw = { kind: "select", rec, pid: rec.page.id, start: pt, moved: false, ptr: e.pointerType, pointerId: e.pointerId, lastClient: { x: e.clientX, y: e.clientY } };
         const inside = self.sel && self.sel.pageId === rec.page.id && self.hitSel(pt);
         if (inside) { self.drag = { mode: "move", start: pt, rec, pid: rec.page.id }; }
         else { self.marquee = { pid: rec.page.id, x: pt.x, y: pt.y, w: 0, h: 0, sx: pt.x, sy: pt.y }; self.clearSelection(); }
         e.preventDefault();
       }
     });
+
     stage.addEventListener("pointermove", e => {
+      if (self.touches.has(e.pointerId) || self.gesture) { self.updateTouchGesture(e); return; }
+      if (e.pointerType === "touch") return;
       const rec = recFor(e);
       if (rec) { const p = self.toPage(e, rec); $("#st-pos").textContent = `Seite ${self.doc ? self.doc.pageOrder.indexOf(rec.page.id) + 1 : 1} · x ${Math.round(p.x)} · y ${Math.round(p.y)}`; }
       if (self.pan) { self.movePan(e); return; }
@@ -2325,6 +2504,7 @@ const Editor = {
       if (self.draw) {
         const r = self.draw.rec;
         const pt = self.toPage(e, r);
+        self.draw.lastClient = { x: e.clientX, y: e.clientY };
         if (self.draw.kind === "stroke") {
           const pts = self.draw.st.pts;
           const lx = pts[pts.length - 2], ly = pts[pts.length - 1];
@@ -2335,14 +2515,14 @@ const Editor = {
               pts.push(r2(mx), r2(my));
             }
             pts.push(r2(pt.x), r2(pt.y));
-            const g = r.canvas.getContext("2d"), s = r.canvas.width / r.page.w;
-            const n = pts.length;
+            const g = r.canvas.getContext("2d"), sx = r.canvas.width / r.page.w;
+            const nn = pts.length;
             g.lineCap = "round"; g.lineJoin = "round";
             g.globalCompositeOperation = self.draw.st.t === "h" ? "multiply" : "source-over";
-            g.strokeStyle = self.draw.st.c; g.globalAlpha = self.draw.st.o; g.lineWidth = self.draw.st.w * s;
+            g.strokeStyle = self.draw.st.c; g.globalAlpha = self.draw.st.o; g.lineWidth = self.draw.st.w * sx;
             g.beginPath();
-            g.moveTo(pts[n - 6] * s, pts[n - 5] * s);
-            g.quadraticCurveTo(pts[n - 4] * s, pts[n - 3] * s, pts[n - 2] * s, pts[n - 1] * s);
+            g.moveTo(pts[nn - 6] * sx, pts[nn - 5] * sx);
+            g.quadraticCurveTo(pts[nn - 4] * sx, pts[nn - 3] * sx, pts[nn - 2] * sx, pts[nn - 1] * sx);
             g.stroke();
             g.globalAlpha = 1; g.globalCompositeOperation = "source-over";
           }
@@ -2359,9 +2539,15 @@ const Editor = {
         self.redrawInk(self.marquee.pid);
       }
     });
+
     const up = e => {
+      if (e.pointerType === "pen") { self.penActive = false; self.lastPenTs = Date.now(); }
+      // Läuft ein Zeichenvorgang, beenden ihn nur Ereignisse desselben Zeigers
+      if (self.draw && self.draw.pointerId != null && e.pointerId !== self.draw.pointerId) return;
+      if (self.touches.has(e.pointerId)) { self.endTouchGesture(false, e); return; }
       if (self.pan) { self.pan = null; $("#stage").classList.remove("panning"); document.body.style.cursor = ""; }
       if (self.drag) { self.commitSelectionMove(); self.drag = null; }
+      if (self.pan && self.pan.pointerId != null && e.pointerId !== self.pan.pointerId) return;
       if (self.draw) {
         const d = self.draw; self.draw = null;
         if (d.kind === "stroke") {
@@ -2400,6 +2586,7 @@ const Editor = {
     };
     $("#stage").addEventListener("pointerup", up);
     $("#stage").addEventListener("pointercancel", up);
+    window.addEventListener("pointerup", e => { if (e.pointerType === "pen") { self.penActive = false; self.lastPenTs = Date.now(); } }, true);
     $("#stage").addEventListener("contextmenu", e => { if (e.target.closest(".page")) e.preventDefault(); });
     // Doppelklick: Textfeld bearbeiten
     $("#pages").addEventListener("dblclick", e => {
@@ -2530,7 +2717,7 @@ const Editor = {
   },
   startPan(e) {
     const stage = $("#stage");
-    this.pan = { x: e.clientX, y: e.clientY, sl: stage.scrollLeft, st: stage.scrollTop };
+    this.pan = { x: e.clientX, y: e.clientY, sl: stage.scrollLeft, st: stage.scrollTop, pointerId: e.pointerId };
     stage.classList.add("panning");
     document.body.style.cursor = "grabbing";
     e.preventDefault();
@@ -2682,14 +2869,15 @@ const Editor = {
     let mode = null, start = null;
     const dn = e => {
       if (e.target.closest(".nbtn")) return;
+      if (e.pointerType === "touch" && SETTINGS.inputMode !== "finger-draw") return;   // Finger scrollt stattdessen
       e.stopPropagation();
       if (self.tool === "eraser") { self.removeNote(pid, n.id); return; }
       const r = el.getBoundingClientRect();
       mode = "move"; start = { x: e.clientX, y: e.clientY, nx: n.x, ny: n.y, w: e.clientX - r.left, h: e.clientY - r.top };
-      el.setPointerCapture(e.pointerId);
+      try { el.setPointerCapture(e.pointerId); } catch (err) { }
       e.preventDefault();
     };
-    const dnRz = e => { e.stopPropagation(); mode = "resize"; start = { x: e.clientX, y: e.clientY, w: n.w, h: n.h }; rz.setPointerCapture(e.pointerId); e.preventDefault(); };
+    const dnRz = e => { e.stopPropagation(); mode = "resize"; start = { x: e.clientX, y: e.clientY, w: n.w, h: n.h }; try { rz.setPointerCapture(e.pointerId); } catch (err) { } e.preventDefault(); };
     const mv = e => {
       if (!mode) return;
       const dx = (e.clientX - start.x) / self.zoom, dy = (e.clientY - start.y) / self.zoom;
@@ -2726,11 +2914,12 @@ const Editor = {
     const self = this;
     let mode = null, start = null;
     el.addEventListener("pointerdown", e => {
+      if (e.pointerType === "touch" && SETTINGS.inputMode !== "finger-draw" && self.tool !== "eraser") return;  // Finger scrollt
       e.stopPropagation();
       if (self.textEditId === t.id) return;
       if (self.tool === "eraser") { self.removeTextBox(pid, t.id); return; }
       mode = "maybe"; start = { x: e.clientX, y: e.clientY, tx: t.x, ty: t.y };
-      el.setPointerCapture(e.pointerId);
+      try { el.setPointerCapture(e.pointerId); } catch (err) { }
     });
     el.addEventListener("pointermove", e => {
       if (!mode) return;
@@ -2822,11 +3011,11 @@ const Editor = {
   },
 
   /* ---------------- Zoom & Navigation ---------------- */
-  setZoom(z, keepCenter) {
+  setZoom(z, keepCenter, force) {
     const stage = $("#stage");
     const old = this.zoom;
     z = clamp(z, 0.25, 5);
-    if (Math.abs(z - old) < 0.001) return;
+    if (!force && Math.abs(z - old) < 0.001) return;
     const cx = (stage.scrollLeft + stage.clientWidth / 2) / old;
     const cy = (stage.scrollTop + stage.clientHeight / 2) / old;
     this.zoom = z;
@@ -3274,6 +3463,21 @@ function openDocAnalysis(id) {
   ensurePane(true);
   Editor.open(id).then(() => { ensurePane(true); renderPane(); switchTab("summary"); refreshAnalysis(d); renderPane(); });
 }
+const INPUT_MODES = {
+  "pen-draw": { label: "Stift zeichnet", hint: "Stift und Maus zeichnen, Finger scrollt und zoomt" },
+  "finger-draw": { label: "Finger zeichnet", hint: "Finger zeichnet ebenfalls, Scrollen und Zoomen mit zwei Fingern" }
+};
+function applyInputMode() {
+  const m = INPUT_MODES[SETTINGS.inputMode] || INPUT_MODES["pen-draw"];
+  const num = $("#ed-input-num"); if (num) num.textContent = m.label;
+  const btn = $("#ed-input"); if (btn) btn.title = "Eingabemodus: " + m.hint + " — klicken zum Wechseln";
+  const st = $("#st-input"); if (st) st.textContent = "Eingabe: " + m.hint;
+}
+function cycleInputMode() {
+  SETTINGS.inputMode = SETTINGS.inputMode === "finger-draw" ? "pen-draw" : "finger-draw";
+  saveSettings(); applyInputMode();
+  toast(INPUT_MODES[SETTINGS.inputMode].hint, "info");
+}
 const PANE_STATE = { tab: "summary", open: true, structMode: "original", structFilter: "all" };
 function ensurePane(force) {
   if (force != null) PANE_STATE.open = force;
@@ -3340,6 +3544,8 @@ function bindUI() {
     Editor.doc.title = e.target.value || "Unbenannt";
     saveDoc(Editor.doc);
   }, 500);
+  $("#ed-input").onclick = cycleInputMode;
+  $("#ed-hwr").onclick = () => convertHandwriting(Editor.sel ? "selection" : "page");
   $("#ed-summarize").onclick = () => { ensurePane(true); switchTab("summary"); summarizeDialog(); };
   $("#ed-export").onclick = exportPageImage;
   $("#ed-thumbs-btn").onclick = () => {
@@ -3379,6 +3585,7 @@ function bindUI() {
       if (e.key === "PageDown" || e.key === "ArrowRight" && !ctrl) { if (e.key === "PageDown") { e.preventDefault(); Editor.nextPage(); } return; }
       if (e.key === "PageUp") { e.preventDefault(); Editor.prevPage(); return; }
       if (e.key.toLowerCase() === "t") { $("#ed-thumbs-btn").click(); return; }
+      if (e.key.toLowerCase() === "h") { convertHandwriting(Editor.sel ? "selection" : "page"); return; }
       if (e.key.toLowerCase() === "a") { $("#ed-pane-btn").click(); return; }
       if (e.key.toLowerCase() === "e") { exportPageImage(); return; }
     } else {
@@ -3448,15 +3655,27 @@ function renderPaneSummary(pane, doc) {
     pane.appendChild(b);
     return;
   }
-  if (A.stats.words < 5 && doc.meta && doc.meta.scanned) {
-    const box = document.createElement("div");
-    box.innerHTML = `<div class="warnbox">Dieses Dokument enthält keinen auslesbaren Text, daher gibt es nichts zusammenzufassen. Mit der Texterkennung lässt sich der Inhalt erschließen — sie läuft nach einmaligem Laden der Erkennungsdaten vollständig lokal.</div>
-      <div class="row" style="margin-top:9px"><button class="btn sm primary" id="sum-ocr">Texterkennung starten</button><button class="btn sm" id="sum-info">Reiter Info</button></div>`;
-    pane.innerHTML = "";
-    pane.appendChild(box);
-    box.querySelector("#sum-ocr").onclick = () => runOcr(doc, false);
-    box.querySelector("#sum-info").onclick = () => switchTab("info");
-    return;
+  if (A.stats.words < 5) {
+    const inkPages = doc.pageOrder.filter(pid => inkStrokes(DOC.page(pid) || {}).length > 0).length;
+    const scanned = doc.meta && doc.meta.scanned;
+    if (inkPages || scanned) {
+      const box = document.createElement("div");
+      box.innerHTML = `<div class="warnbox">${inkPages
+        ? `Auf ${inkPages === 1 ? "dieser Seite stehen" : "diesen Seiten stehen"} nur Stiftstriche, also keine auslesbare Schrift. Mit „Handschrift erkennen“ wird daraus Text, der zusammengefasst, durchsucht und sortiert werden kann.`
+        : "Dieses Dokument enthält keinen auslesbaren Text, daher gibt es nichts zusammenzufassen. Mit der Texterkennung lässt sich der Inhalt erschließen."}</div>
+        <div class="row wrap" style="margin-top:9px">
+          ${inkPages ? `<button class="btn sm primary" id="sum-hwr">Handschrift erkennen</button>` : ""}
+          <button class="btn sm ${inkPages ? "" : "primary"}" id="sum-ocr">${scanned ? "Texterkennung für Scans" : "Seite per Texterkennung auswerten"}</button>
+          <button class="btn sm" id="sum-info">Reiter Info</button>
+        </div>
+        <p class="fine" style="margin:9px 0 0">Beide Erkennungen laufen nach einmaligem Laden der Module lokal im Browser.</p>`;
+      pane.innerHTML = "";
+      pane.appendChild(box);
+      const h = box.querySelector("#sum-hwr"); if (h) h.onclick = () => convertHandwriting("page");
+      box.querySelector("#sum-ocr").onclick = () => runOcr(doc, false);
+      box.querySelector("#sum-info").onclick = () => switchTab("info");
+      return;
+    }
   }
   const kw = A.keywords.slice(0, 12);
   const dates = (A.entities.dates || []).slice(0, 6);
@@ -3759,6 +3978,7 @@ function renderPaneInfo(pane, doc) {
       <div class="row wrap" style="margin-top:6px">
         <button class="btn sm" id="info-addfiles">Dateien als Seiten</button>
         <button class="btn sm" id="info-text">Text der Seite bearbeiten</button>
+        <button class="btn sm" id="info-hwr">Handschrift erkennen</button>
       </div>
     </div>
   </div>
@@ -3798,6 +4018,8 @@ function renderPaneInfo(pane, doc) {
   };
   pane.querySelector("#info-addfiles").onclick = () => $("#page-input").click();
   pane.querySelector("#info-text").onclick = () => editPageText(pid);
+  const hwrBtn = pane.querySelector("#info-hwr");
+  if (hwrBtn) hwrBtn.onclick = () => convertHandwriting(Editor.sel ? "selection" : "page");
   pane.querySelector("#info-page-png").onclick = () => exportPageImage();
   const og = pane.querySelector("#info-original");
   if (og) og.onclick = () => downloadOriginal(doc);
@@ -4167,8 +4389,7 @@ async function runOcr(doc, allPages) {
     html: `<div class="progress"><i id="oc-fill" style="width:0%"></i></div><p class="fine" id="oc-txt" style="margin:8px 0 0">Modul wird geladen …</p>`,
     footer: [{ label: "Abbrechen", onClick: a => a.close() }]
   });
-  let T;
-  try { T = await loadTesseract(); }
+  try { await loadTesseract(); }
   catch (e) { sheet.close(); toast(e.message, "err"); return; }
   const targets = doc.pageOrder.map((pid, i) => ({ pid, i })).filter(({ pid }) => {
     const p = DOC.page(pid);
@@ -4185,10 +4406,10 @@ async function runOcr(doc, allPages) {
       setTxt(`Seite ${i + 1} / ${doc.pageOrder.length} wird vorbereitet`);
       const c = await composePage(p, 1.6);
       setTxt(`Seite ${i + 1} wird erkannt …`);
-      const res = await T.recognize(c.toDataURL("image/png"), "deu+eng", {
+      const txt = await Hwr.recognize(c, {
+        langs: "deu+eng", psm: "3",
         logger: m => { if (m.status === "recognizing text") setTxt(`Seite ${i + 1}: ${Math.round(m.progress * 100)} %`); }
       });
-      const txt = (res.data.text || "").replace(/-\n/g, "").replace(/\n{2,}/g, "\n").trim();
       if (txt.length > 10) { p.text = txt; p.textSource = "ocr"; await savePage(p); }
     } catch (e) { console.warn(e); }
     done++;
@@ -4204,6 +4425,231 @@ async function runOcr(doc, allPages) {
 }
 
 /* =====================================================================
+   11b. Handschrift-Erkennung
+   Stiftstriche werden zu einem aufbereiteten Schwarz-Weiß-Bild gerendert
+   (hochskaliert, Kanten geschärft, Linien leicht verdickt) und lokal durch
+   das Erkennungsmodul in Text umgewandelt. Das Ergebnis ist bearbeitbar und
+   lässt sich entweder als Textfeld an die Stelle der Handschrift setzen oder
+   als Seitentext für Analyse und Suche übernehmen.
+   ===================================================================== */
+const Hwr = {
+  worker: null,
+  workerLang: null,
+  async workerFor(langs, logger) {
+    const T = await loadTesseract();
+    if (this.worker && this.workerLang === langs) return this.worker;
+    if (this.worker) { try { await this.worker.terminate(); } catch (e) { } this.worker = null; this.workerLang = null; }
+    if (typeof T.createWorker === "function") {
+      try {
+        const opts = typeof logger === "function" ? { logger } : {};   // ohne Rückruf darf kein leerer Wert übergeben werden
+        const w = await T.createWorker(langs, 1, opts);
+        this.worker = w; this.workerLang = langs;
+        if (typeof w.setParameters === "function") {
+          try { await w.setParameters({ user_defined_dpi: "300", preserve_interword_spaces: "1" }); } catch (e) { }
+        }
+        return w;
+      } catch (e) { this.worker = null; this.workerLang = null; }
+    }
+    return null;
+  },
+  async recognize(image, { langs = "deu", psm = "6", logger } = {}) {
+    const T = await loadTesseract();
+    const w = await this.workerFor(langs, logger);
+    if (w) {
+      try {
+        if (typeof w.setParameters === "function") await w.setParameters({ tessedit_pageseg_mode: String(psm) });
+        const { data } = await w.recognize(image);
+        return cleanInkText(data.text);
+      } catch (e) { console.warn("Erkennung über Worker fehlgeschlagen", e); }
+    }
+    const res = await T.recognize(image, langs, { logger });
+    return cleanInkText(res.data.text);
+  },
+  async stop() { if (this.worker) { try { await this.worker.terminate(); } catch (e) { } this.worker = null; this.workerLang = null; } }
+};
+function cleanInkText(t) {
+  return String(t || "").replace(/\u00a0/g, " ")
+    .split("\n")
+    .map(l => l.replace(/[ \t]{2,}/g, " ").trim())
+    .filter(l => l.replace(/[^0-9A-Za-zÄÖÜäöüß]/g, "").length > 0)
+    .join("\n").replace(/\n{3,}/g, "\n\n").trim();
+}
+const inkStrokes = (page, ids) => (page.strokes || []).filter(s => s.t === "p" && (!ids || ids.includes(s.id)));
+function inkRowsOf(list) {
+  const boxes = list.map(s => s.b || strokeBounds(s)).sort((a, b) => a.y - b.y);
+  const rows = [];
+  for (const b of boxes) {
+    const hit = rows.find(r => !(b.y > r.y1 - 2 || b.y + b.h < r.y0 + 2));
+    if (hit) { hit.y0 = Math.min(hit.y0, b.y); hit.y1 = Math.max(hit.y1, b.y + b.h); }
+    else rows.push({ y0: b.y, y1: b.y + b.h });
+  }
+  return rows;
+}
+function renderInkCanvas(list, bounds, opts = {}) {
+  const rows = inkRowsOf(list);
+  const lineH = rows.length ? bounds.h / rows.length : bounds.h;
+  const sc = clamp(opts.scale || (46 / Math.max(20, lineH)), 1, 4);
+  const pad = opts.pad == null ? 26 : opts.pad;
+  const w = Math.min(4200, Math.max(64, Math.round((bounds.w + pad * 2) * sc)));
+  const h = Math.min(4200, Math.max(64, Math.round((bounds.h + pad * 2) * sc)));
+  const c = document.createElement("canvas");
+  c.width = w; c.height = h;
+  const g = c.getContext("2d");
+  g.fillStyle = "#fff"; g.fillRect(0, 0, w, h);
+  g.strokeStyle = "#000"; g.lineCap = "round"; g.lineJoin = "round";
+  list.forEach(st => {
+    g.lineWidth = Math.max(3, (st.w || 2) * 1.6) * sc;
+    const p = st.pts;
+    g.beginPath();
+    for (let i = 0; i < p.length; i += 2) {
+      const x = (p[i] - bounds.x + pad) * sc, y = (p[i + 1] - bounds.y + pad) * sc;
+      i === 0 ? g.moveTo(x, y) : g.lineTo(x, y);
+    }
+    g.stroke();
+  });
+  const img = g.getImageData(0, 0, w, h), d = img.data;
+  for (let i = 0; i < d.length; i += 4) {
+    const lum = d[i] * 0.299 + d[i + 1] * 0.587 + d[i + 2] * 0.114;
+    const v = lum < 150 ? 0 : 255;
+    d[i] = d[i + 1] = d[i + 2] = v; d[i + 3] = 255;
+  }
+  if (opts.dilate !== false) {                        // dünne Linien verdicken verbessert die Trefferquote
+    const src = new Uint8ClampedArray(d);
+    const at = (x, y) => (y * w + x) * 4;
+    for (let y = 1; y < h - 1; y++) for (let x = 1; x < w - 1; x++) {
+      const i = at(x, y);
+      if (src[i] === 0) continue;
+      if (src[at(x - 1, y)] === 0 || src[at(x + 1, y)] === 0 || src[at(x, y - 1)] === 0 || src[at(x, y + 1)] === 0) {
+        d[i] = d[i + 1] = d[i + 2] = 0;
+      }
+    }
+  }
+  g.putImageData(img, 0, 0);
+  return { canvas: c, scale: sc, rows: rows.length };
+}
+async function recognizeRegion(list, bounds, line, onProgress) {
+  const prep = renderInkCanvas(list, bounds, {});
+  onProgress && onProgress("Erkennungsmodul wird geladen …");
+  const text = await Hwr.recognize(prep.canvas, {
+    langs: "deu", psm: line ? "7" : "6",
+    logger: m => { if (onProgress && m.status === "recognizing text") onProgress("Erkenne … " + Math.round(m.progress * 100) + " %"); }
+  });
+  return { text, canvas: prep.canvas, scale: prep.scale };
+}
+function addInkTextToPage(pid, text) {
+  const page = DOC.page(pid); if (!page) return;
+  page.text = (page.text ? page.text + "\n" : "") + text;
+  page.textSource = page.textSource ? (page.textSource + "+handschrift") : "handschrift";
+  savePage(page);
+  if (Editor.doc) { refreshAnalysis(Editor.doc); renderPane(); }
+  toast("Handschrift als Seitentext übernommen — sie zählt jetzt zur Analyse", "ok");
+}
+function replaceInkWithText(pid, ids, bounds, text) {
+  const page = DOC.page(pid); if (!page) return;
+  const before = snapshotPage(pid);
+  page.strokes = (page.strokes || []).filter(s => !ids.includes(s.id));
+  const lines = Math.max(1, text.split("\n").length);
+  const size = clamp((bounds.h / lines) * 0.66, 11, 44);
+  page.texts.push({
+    id: uid("tx"), x: Math.round(bounds.x), y: Math.round(bounds.y), text,
+    size: Math.round(size * 10) / 10, color: "#26292c",
+    w: Math.max(140, Math.ceil(bounds.w + 24)), h: Math.ceil(bounds.h + 10), align: "left", fromInk: true
+  });
+  if (Editor.sel) Editor.clearSelection();
+  Editor.pushHistory({ kind: "annot", pid, before, after: snapshotPage(pid) });
+  Editor.markDirty(page);
+  Editor.buildDomAnnotations(pid);
+  Editor.redrawInk(pid);
+  if (Editor.doc) { refreshAnalysis(Editor.doc); renderPane(); }
+  toast("Handschrift durch bearbeitbaren Text ersetzt", "ok");
+}
+async function convertHandwriting(mode) {
+  const doc = Editor.doc;
+  if (!doc) { toast("Kein Dokument geöffnet", "err"); return; }
+  const pid = Editor.activePageId || doc.pageOrder[0];
+  const page = DOC.page(pid);
+  if (!page) return;
+  let ids = null;
+  if (mode === "selection") {
+    if (!Editor.sel || Editor.sel.pageId !== pid) { toast("Zuerst mit dem Auswahlwerkzeug einen Bereich markieren", "err"); return; }
+    ids = Editor.sel.ids;
+  }
+  const list = inkStrokes(page, ids);
+  if (!list.length) {
+    toast(ids ? "In der Auswahl sind keine Stiftstriche" : "Auf dieser Seite gibt es keine Handschrift", ids ? "err" : "info");
+    return;
+  }
+  const bounds = unionBounds(list.map(s => s.b || strokeBounds(s)));
+  const line = inkRowsOf(list).length <= 1 || !!SETTINGS.hwrLine;
+  const sheet = openSheet({
+    title: "Handschrift erkennen", icon: "i-hwr",
+    html: `<div class="progress"><i id="hw-fill" style="width:6%"></i></div><p class="fine" id="hw-msg" style="margin:8px 0 0">Vorbereitung …</p>
+      <div class="warnbox" style="margin-top:10px">Beim ersten Mal lädt die Erkennung ein Modul und Sprachdaten aus dem Netz. Danach arbeitet sie vollständig lokal.</div>`,
+    footer: [{ label: "Abbrechen", onClick: a => a.close() }]
+  });
+  const fill = $("#hw-fill"), msg = $("#hw-msg");
+  const onProgress = m => { if (msg) msg.textContent = m; if (fill && /%/.test(m)) fill.style.width = clamp(parseInt(m.replace(/\D+/g, ""), 10), 10, 99) + "%"; };
+  let res;
+  try {
+    res = await recognizeRegion(list, bounds, line, onProgress);
+  } catch (e) {
+    sheet.close();
+    toast("Handschrift-Erkennung nicht möglich: " + (e && e.message ? e.message : "Fehler"), "err");
+    return;
+  }
+  sheet.close();
+  showHandwritingResult({ doc, pid, list, ids: list.map(s => s.id), bounds, text: res.text, canvas: res.canvas, line });
+}
+function showHandwritingResult(ctx) {
+  const { pid, list, bounds } = ctx;
+  const node = document.createElement("div");
+  node.innerHTML = `
+    <div class="split">
+      <div>
+        <div class="field"><label>Erkannter Text — vor dem Übernehmen prüfen und korrigieren</label>
+          <textarea id="hw-text" style="min-height:36vh;white-space:pre-wrap"></textarea></div>
+        <label class="check"><input type="checkbox" id="hw-line" ${ctx.line ? "checked" : ""}> einzelne Zeile (genauer, wenn nur eine Zeile geschrieben wurde)</label>
+        <div class="row wrap" style="margin-top:6px">
+          <button class="btn sm" id="hw-again">Noch einmal erkennen</button>
+          <button class="btn sm" id="hw-copy">Kopieren</button>
+          <span class="fine" id="hw-state"></span>
+        </div>
+        <p class="fine" style="margin-top:8px">Blockbuchstaben und deutliche Schrift erkennen deutlich besser als verbundene Schreibschrift. Der Text wird als bearbeitbares Textfeld eingesetzt oder als Seitentext gespeichert und damit Teil der Analyse.</p>
+      </div>
+      <div>
+        <img class="hw-preview" id="hw-img" alt="Vorschau der erkannten Handschrift">
+        <p class="fine" id="hw-meta"></p>
+      </div>
+    </div>`;
+  node.querySelector("#hw-text").value = ctx.text || "";
+  node.querySelector("#hw-img").src = ctx.canvas.toDataURL("image/png");
+  node.querySelector("#hw-meta").textContent = `${list.length} Striche · ${Math.round(bounds.w)} × ${Math.round(bounds.h)} Punkte · ${ctx.line ? "einzeilig erkannt" : "als Block erkannt"}`;
+  openSheet({
+    title: "Handschrift in Text umwandeln", icon: "i-hwr", node, wide: true,
+    footer: [
+      { label: "Abbrechen", onClick: a => a.close() },
+      { label: "Nur als Seitentext speichern", onClick: a => { const t = node.querySelector("#hw-text").value.trim(); a.close(); if (t) addInkTextToPage(pid, t); } },
+      { label: "Handschrift durch Text ersetzen", kind: "primary", onClick: a => { const t = node.querySelector("#hw-text").value.trim(); a.close(); if (t) replaceInkWithText(pid, ctx.ids, bounds, t); } }
+    ]
+  });
+  node.querySelector("#hw-again").onclick = async () => {
+    const line = node.querySelector("#hw-line").checked;
+    SETTINGS.hwrLine = line; saveSettings();
+    const st = node.querySelector("#hw-state");
+    if (st) st.textContent = "erkenne …";
+    try {
+      const res = await recognizeRegion(list, bounds, line, m => { if (st) st.textContent = m; });
+      node.querySelector("#hw-text").value = res.text;
+      node.querySelector("#hw-img").src = res.canvas.toDataURL("image/png");
+      if (st) st.textContent = "fertig";
+    } catch (e) { if (st) st.textContent = "Fehlgeschlagen: " + (e && e.message || "Fehler"); }
+  };
+  node.querySelector("#hw-copy").onclick = async () => {
+    (await copyText(node.querySelector("#hw-text").value)) ? toast("Kopiert", "ok") : toast("Kopieren nicht möglich", "err");
+  };
+}
+
+/* =====================================================================
    12. Einstellungen, Hilfe, Sicherung
    ===================================================================== */
 function openSettings() {
@@ -4212,6 +4658,12 @@ function openSettings() {
   node.innerHTML = `
     <div class="split">
       <div>
+        <div class="field"><label>Eingabe (Tablet und Stift)</label>
+          <select id="se-input">
+            <option value="pen-draw" ${SETTINGS.inputMode === "pen-draw" ? "selected" : ""}>Stift zeichnet, Finger scrollt</option>
+            <option value="finger-draw" ${SETTINGS.inputMode === "finger-draw" ? "selected" : ""}>Finger zeichnet ebenfalls</option>
+          </select></div>
+        <label class="check"><input type="checkbox" id="se-palm" ${SETTINGS.palmReject !== false ? "checked" : ""}> Handballen automatisch ignorieren</label>
         <div class="field"><label>Erscheinungsbild</label>
           <select id="se-theme">
             <option value="auto" ${SETTINGS.theme === "auto" ? "selected" : ""}>Automatisch (System)</option>
@@ -4261,6 +4713,8 @@ function openSettings() {
     ]
   });
   const se = id => node.querySelector("#" + id);
+  se("se-input").onchange = e => { SETTINGS.inputMode = e.target.value; saveSettings(); applyInputMode(); toast(INPUT_MODES[SETTINGS.inputMode].hint, "info"); };
+  se("se-palm").onchange = e => { SETTINGS.palmReject = e.target.checked; saveSettings(); };
   se("se-theme").onchange = e => { SETTINGS.theme = e.target.value; applyTheme(); saveSettings(); redrawAllPagesSoft(); };
   se("se-tool").onchange = e => { SETTINGS.defaultTool = e.target.value; saveSettings(); };
   se("se-paper").onchange = e => { SETTINGS.paperColor = e.target.value; if (Editor.doc) { Editor.doc.settings.paper = e.target.value; saveDoc(Editor.doc); } saveSettings(); };
@@ -4317,6 +4771,14 @@ function openHelp() {
           <li><span class="mono">[?]</span> Frage</li>
           <li><span class="mono">[i]</span> wichtige Information</li>
         </ul>
+        <h3 style="margin:14px 0 6px;font-size:13px">Schreiben und Blättern</h3>
+        <ul class="list-simple">
+          <li>Stift (Apple Pencil, S Pen) und Maus zeichnen. Der Finger scrollt und zoomt mit zwei Fingern.</li>
+          <li>Handballen und Handkante werden erkannt und ignoriert, auch kurz nach dem Schreiben.</li>
+          <li>Für Tablets ohne Stift: Knopf mit dem Finger-Symbol in der Leiste oder Einstellungen, Modus „Finger zeichnet“. Gescrollt wird dann mit zwei Fingern.</li>
+        </ul>
+        <h3 style="margin:14px 0 6px;font-size:13px">Handschrift erkennen</h3>
+        <p class="fine">Knopf „Handschrift“ oder Taste H: Stiftstriche werden in Text umgewandelt. Vorher mit dem Auswahlwerkzeug einen Bereich markieren, sonst wird die ganze Seite genommen. Das Ergebnis lässt sich korrigieren und entweder als bearbeitbares Textfeld an die Stelle der Handschrift setzen oder als Seitentext übernehmen, der dann in Zusammenfassung, Suche und Sortierung einfließt. Das Modul wird beim ersten Mal aus dem Netz geladen, danach arbeitet die Erkennung lokal. Blockbuchstaben erkennt sie deutlich besser als Schreibschrift.</p>
         <h3 style="margin:14px 0 6px;font-size:13px">Analyseverfahren</h3>
         <p class="fine">Satzsegmentierung mit Abkürzungsschutz, Stoppwortlisten für Deutsch und Englisch, Häufigkeits- und Seltenheitsgewichtung, Zusatzsignale für Überschriften, Aufgaben, Schlüsselwörter und Position, Redundanzfilter durch Überlappung, Themenblöcke über Ähnlichkeitsclustering, danach Ausgabe als Kurzfassung, Gliederung, Tabelle oder Notizzettel.</p>
       </div>
@@ -4333,6 +4795,7 @@ function openHelp() {
           <span class="kbd">Strg + Mausrad</span><span>Zoom</span>
           <span class="kbd">Leertaste + Ziehen</span><span>Ansicht verschieben</span>
           <span class="kbd">Bild ↑ / ↓</span><span>Seite wechseln</span>
+          <span class="kbd">H</span><span>Handschrift in Text umwandeln</span>
           <span class="kbd">T</span><span>Seitenübersicht</span>
           <span class="kbd">A</span><span>Analyse-Panel</span>
           <span class="kbd">E</span><span>Seite exportieren</span>
@@ -4488,6 +4951,7 @@ async function boot() {
   $("#nav-editor").disabled = !lastOk;
   Editor.zoom = 1;
   Editor.setTool(SETTINGS.defaultTool || "pen", true);
+  applyInputMode();
   renderLibrary();
   updateStorageUI();
   if (SETTINGS.cookieNotice) setTimeout(showStorageNotice, 500);
@@ -4508,9 +4972,10 @@ window.Grauwerk = {
   TextEngine, Store, Cookies, DOC, Editor, Lib, SETTINGS, ingestFiles, renderLibrary, renderPane,
   exportMarkdown, backupAll, restoreFromBackup: () => restoreAll(), purgeEverything: () => purgeAll(),
   placeNotes, analysisFor, refreshAnalysis, composePage, showStorageNotice, switchTab,
-  TextApi: { decodeText, htmlToText, parseCSV, stripSubs, jsonToText }, version: "1.0"
+  convertHandwriting, cycleInputMode, applyInputMode, Hwr, renderInkCanvas, inkStrokes,
+  TextApi: { decodeText, htmlToText, parseCSV, stripSubs, jsonToText }, version: "1.1"
 };
 })();
 </script>
-<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a439e878db07469a',t:'MTc5MDg0MTM1OA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a43a07e08fdd33b5',t:'MTc5MDg0MjY0NA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
